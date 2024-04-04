@@ -1,0 +1,42 @@
+package views
+
+import(
+    "fastfit/models"
+    "strconv"
+)
+
+templ UserForList(User models.User) {
+    <div class="container mx-auto">
+    <div style="flex-column"> { strconv.FormatUint(uint64(User.ID), 10)} </div>
+    <div style="flex-column" > { User.Username} </div>
+    <div style="flex-column"> { User.Email} </div>
+    
+    </div>
+}
+
+templ UserList(Users []models.User) {
+    <ul>
+        for _, user := range Users {
+            @UserForList(user)
+        }
+    </ul>
+}
+
+templ Navbar() {
+    
+}
+
+templ Index(Users []models.User) {
+    <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+             <link href="../static/css/output.css" rel="stylesheet"/>
+        </head>
+        <body>
+            @UserList(Users)
+        </body>
+        </html>
+}
+
