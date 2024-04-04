@@ -6,25 +6,80 @@ import(
 )
 
 templ UserForList(User models.User) {
-    <div class="container mx-auto">
-    <div style="flex-column"> { strconv.FormatUint(uint64(User.ID), 10)} </div>
-    <div style="flex-column" > { User.Username} </div>
-    <div style="flex-column"> { User.Email} </div>
+    <tr id={"userNo"+strconv.FormatUint(uint64(User.ID), 10)}>
+
+        <td> @ControlButtons(User.ID) </td>
+        <td class="basis-1/4 m-3"> { strconv.FormatUint(uint64(User.ID), 10)} </td>
+        <td class="basis-1/2 m-3" > { User.Name} </td>
+        <td class="basis-1/2 m-3" > { User.Username} </td>
+        <td class="basis-1/2 m-3"> { User.Email} </td>
+    </tr>
+}
+
+
+templ UpdateForm(User models.User) {
+
+    <h2>Update User</h2>
+    <form hx-patch={"/users/"+strconv.FormatUint(uint64(User.ID), 10)} 
+            hx-target={"#userNo"+strconv.FormatUint(uint64(User.ID), 10)} hx-swap="outerHTML">
     
+        <input type="text" name="name" value={User.Name} required />
+        <input type="text" name="username" value={User.Username} required />
+        <input type="email" name="email" value={User.Email} required />
+        <input type="password" name="password" value={User.Password} required />
+        <button class="bg-yellow-600 hover:bg-yellow-900 p-3 m-5 " type="submit">Update User</button>
+    </form>
+
+    <button class="bg-green-600 hover:bg-green-800 p-3 m-5" type="button" hx-get="/userForm" hx-target="#forms" hx-swap="innerHTML">Add User</button>
+}
+
+
+templ UserForm(){
+
+    <h2>Add User</h2>
+    <form id="addUserForm" hx-post="/users" hx-target="#user-list" hx-swap="afterend">
+        <input type="text" name="name" placeholder="Name" required />
+        <input type="text" name="username" placeholder="Username" required />
+        <input type="email" name="email" placeholder="Email" required />
+        <input type="password" name="password" placeholder="Password" required />
+        <p></p>
+        <button class="bg-green-600 hover:bg-green-800 p-3 m-5"  type="submit">Add User</button>
+    </form>
+}
+
+templ ControlButtons(id uint){
+
+    <div class="flex">
+        <button class="bg-red-500 text-white hover:bg-red-700 p-1 m-3 " 
+            hx-delete={"/users/" + strconv.FormatUint(uint64(id), 10)} 
+            hx-target={"#userNo"+strconv.FormatUint(uint64(id), 10)}>Delete</button>
+
+        <button hx-get={"/userForm/"+strconv.FormatUint(uint64(id), 10)} hx-target="#forms" hx-swap="innerHTML" 
+            class="bg-blue-500 text-white hover:bg-blue-700 p-1 m-3">Edit</button> 
     </div>
 }
 
+
+
 templ UserList(Users []models.User) {
-    <ul>
+    <table hx-get="/users" hx-trigger="every 5s" hx-swap="outerHTML" class="w-full">
+        <tr>
+            <th>Control</th>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Username</th>
+            <th>Email</th>
+        </tr>
+    <tbody id="user-list">
         for _, user := range Users {
             @UserForList(user)
+            
         }
-    </ul>
+    </tbody>
+    </table>
 }
 
-templ Navbar() {
-    
-}
+
 
 templ Index(Users []models.User) {
     <!DOCTYPE html>
@@ -32,10 +87,22 @@ templ Index(Users []models.User) {
         <head>
             <meta charset="UTF-8" />
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-             <link href="../static/css/output.css" rel="stylesheet"/>
+             <link rel="stylesheet" href="static/css/style.css"/>
+            <script src="https://unpkg.com/htmx.org/dist/htmx.js"></script>
         </head>
-        <body>
-            @UserList(Users)
+        <body class="p-16">
+            <div class="">
+                <h1>FastFit</h1>
+                <div id="forms">
+                    @UserForm()
+                </div>
+
+                <div class="m-10"/>
+
+                <h2>Users</h2>
+                @UserList(Users)
+                
+            </div>
         </body>
         </html>
 }

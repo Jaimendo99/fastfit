@@ -25,19 +25,21 @@ func main() {
 
 	store.Migrate(db)
 
-	// userData := models.User{Name: "John Doe", Username: "johndoe", Password: "password", Email: "jaime@gmail.com"}
+	e.GET("/", controllers.GetPage(db), middleware.Logger())
 
-	// result := db.Create(&userData)
-
-	// if result.Error != nil {
-	// 	e.Logger.Fatal(result.Error)
-	// 	fmt.Printf("error creating user:" + result.Error.Error())
-	// 	return
-	// }
-
-	// fmt.Println("User created with ID:" + strconv.FormatUint(uint64(userData.ID), 10))
+	e.GET("/users/:id", controllers.GetUser(db), middleware.Logger())
 
 	e.GET("/users", controllers.GetUsers(db), middleware.Logger())
+
+	e.POST("/users", controllers.CreateUser(db), middleware.Logger())
+	e.GET("/userForm", controllers.GetAddUserForm(), middleware.Logger())
+
+	e.DELETE("/users/:id", controllers.DeleteUser(db), middleware.Logger())
+
+	e.PATCH("/users/:id", controllers.UpdateUser(db), middleware.Logger())
+	e.GET("userForm/:id", controllers.GetUpdateForm(db), middleware.Logger())
+
+	e.Static("/static", "static")
 
 	e.Logger.Fatal(e.Start(":8080"))
 }
