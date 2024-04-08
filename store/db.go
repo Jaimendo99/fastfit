@@ -9,6 +9,8 @@ import (
 	"gorm.io/gorm"
 )
 
+var DB *gorm.DB
+
 func NewConnection(dbName string) (*gorm.DB, error) {
 	db, err := gorm.Open(sqlite.Open(dbName), &gorm.Config{})
 	if err != nil {
@@ -16,6 +18,16 @@ func NewConnection(dbName string) (*gorm.DB, error) {
 	}
 
 	return db, nil
+}
+
+func InitDB() {
+	db, err := NewConnection("test.db")
+	if err != nil {
+		fmt.Printf("error opening sqlite:" + err.Error())
+		return
+	}
+
+	DB = db
 }
 
 func Migrate(db *gorm.DB) {

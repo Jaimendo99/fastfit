@@ -1,10 +1,10 @@
 .PHONY: tailwind-watch
 tailwind-watch:
-	.\tailwindcss-windows-x64.exe -i ./static/css/input.css -o ./static/css/style.css --watch
+	./tailwind -i ./static/css/input.css -o ./static/css/style.css --watch
 
 .PHONY: tailwind-build
 tailwind-build:
-	.\tailwindcss-windows-x64.exe -i ./static/css/input.css -o ./static/css/style.min.css --minify
+	./tailwind -i ./static/css/input.css -o ./static/css/style.min.css --minify
 
 .PHONY: templ-generate
 templ-generate:

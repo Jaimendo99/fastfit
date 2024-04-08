@@ -2,14 +2,14 @@ package controllers
 
 import (
 	"fastfit/models"
+	"fastfit/store"
 	"fastfit/views"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"gorm.io/gorm"
 )
 
-func CreateUser(db *gorm.DB) echo.HandlerFunc {
+func CreateUser() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		user := models.User{
 			Name:     c.FormValue("name"),
@@ -18,7 +18,7 @@ func CreateUser(db *gorm.DB) echo.HandlerFunc {
 			Email:    c.FormValue("email"),
 		}
 
-		result := db.Create(&user)
+		result := store.DB.Create(&user)
 		if result.Error != nil {
 			c.Response().WriteHeader(http.StatusInternalServerError)
 			return views.Errors("Error when creating user").Render(c.Request().Context(), c.Response().Writer)
