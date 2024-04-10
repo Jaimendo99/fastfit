@@ -15,6 +15,10 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+type failResponse struct {
+	Message string `json:"message"`
+}
+
 type body struct {
 	Name     string `json:"name" form:"name"`
 	Email    string `json:"email" form:"email"`
@@ -28,7 +32,7 @@ func SignUp() echo.HandlerFunc {
 		var body body
 
 		if c.Bind(&body) != nil {
-			return c.JSON(http.StatusBadRequest, "Invalid request body")
+			return c.JSON(http.StatusBadRequest, failResponse{Message: "Invalid request body"})
 		}
 
 		err := validateData(&body)
@@ -40,7 +44,7 @@ func SignUp() echo.HandlerFunc {
 		hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), 10)
 
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, "Error hashing password")
+			return c.JSON(http.StatusInternalServerError, failResponse{Message: "Error hashing password"})
 		}
 
 		user := models.User{
@@ -53,7 +57,7 @@ func SignUp() echo.HandlerFunc {
 		result := store.DB.Create(&user)
 
 		if result.Error != nil {
-			return c.JSON(http.StatusInternalServerError, "Error creating user")
+			return c.JSON(http.StatusInternalServerError, failResponse{Message: "Error creating user"})
 		}
 
 		return c.JSON(http.StatusCreated, user)
@@ -71,7 +75,7 @@ func SignIn() echo.HandlerFunc {
 		}
 
 		if c.Bind(&body) != nil {
-			return c.JSON(http.StatusBadRequest, "Invalid request body")
+			return c.JSON(http.StatusBadRequest, failResponse{Message: "Invalid request body"})
 		}
 
 		var user models.User
@@ -83,13 +87,13 @@ func SignIn() echo.HandlerFunc {
 		}
 
 		if user.ID == 0 {
-			return c.JSON(http.StatusUnauthorized, "User not found")
+			return c.JSON(http.StatusUnauthorized, failResponse{Message: "User not found"})
 		}
 
 		err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(body.Password))
 
 		if err != nil {
-			return c.JSON(http.StatusUnauthorized, "Invalid password")
+			return c.JSON(http.StatusUnauthorized, failResponse{Message: "Invalid password"})
 		}
 
 		token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
@@ -100,7 +104,7 @@ func SignIn() echo.HandlerFunc {
 		tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, "Error generating token")
+			return c.JSON(http.StatusInternalServerError, failResponse{Message: "Error generating token"})
 		}
 
 		c.SetCookie(&http.Cookie{
