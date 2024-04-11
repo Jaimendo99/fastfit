@@ -23,9 +23,11 @@ func main() {
 
 	e := echo.New()
 	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
 
-	e.POST("/signup", controllers.SignUp(), middleware.Logger())
+	e.GET("/login", controllers.GetLogin(), middleware.Logger())
 	e.POST("/login", controllers.SignIn(), middleware.Logger())
+	e.POST("/signup", controllers.SignUp(), middleware.Logger())
 
 	e.GET("/", controllers.GetPage(), middleware.Logger())
 

@@ -19,6 +19,11 @@ type failResponse struct {
 	Message string `json:"message"`
 }
 
+type jwtUserClaims struct {
+	Sub uint `json:"sub"`
+	jwt.RegisteredClaims
+}
+
 type body struct {
 	Name     string `json:"name" form:"name"`
 	Email    string `json:"email" form:"email"`
@@ -96,10 +101,14 @@ func SignIn() echo.HandlerFunc {
 			return c.JSON(http.StatusUnauthorized, failResponse{Message: "Invalid password"})
 		}
 
-		token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-			"sub": user.ID,
-			"exp": time.Now().Add(time.Hour * 24 * 7).Unix(),
-		})
+		claims := &jwtUserClaims{
+			user.ID,
+			jwt.RegisteredClaims{
+				ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24 * 7)),
+			},
+		}
+
+		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 		tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 
@@ -112,9 +121,10 @@ func SignIn() echo.HandlerFunc {
 			Value:    tokenString,
 			Expires:  time.Now().Add(time.Hour * 24 * 7),
 			HttpOnly: true,
-			Secure:   true,
+			Secure:   false,
 		})
 
+		c.Redirect(http.StatusFound, "/")
 		return c.JSON(http.StatusOK, user)
 
 	}

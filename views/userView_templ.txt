@@ -12,13 +12,13 @@
 \" required> <input type=\"email\" name=\"email\" value=\"
 \" required> <input type=\"password\" name=\"password\" value=\"
 \" required> <button class=\"bg-yellow-600 hover:bg-yellow-900 p-3 m-5 \" type=\"submit\">Update User</button></form><button class=\"bg-green-600 hover:bg-green-800 p-3 m-5\" type=\"button\" hx-get=\"/userForm\" hx-target=\"#forms\" hx-swap=\"innerHTML\">Add User</button>
-<h2>Add User</h2><form id=\"addUserForm\" hx-post=\"/users\" hx-target=\"#user-list\" hx-swap=\"afterend\"><input type=\"text\" name=\"name\" placeholder=\"Name\" required> <input type=\"text\" name=\"username\" placeholder=\"Username\" required> <input type=\"email\" name=\"email\" placeholder=\"Email\" required> <input type=\"password\" name=\"password\" placeholder=\"Password\" required><p></p><button class=\"bg-green-600 hover:bg-green-800 p-3 m-5\" type=\"submit\">Add User</button></form>
+<h2 class=\"font-bold\">Add User</h2><form id=\"addUserForm\" hx-post=\"/users\" hx-target=\"#user-list\" hx-swap=\"afterend\"><input type=\"text\" name=\"name\" placeholder=\"Name\" required> <input type=\"text\" name=\"username\" placeholder=\"Username\" required> <input type=\"email\" name=\"email\" placeholder=\"Email\" required> <input type=\"password\" name=\"password\" placeholder=\"Password\" required><p></p><button class=\"bg-green-600 hover:bg-green-800 p-3 m-5\" type=\"submit\">Add User</button></form>
 <div class=\"flex\"><button class=\"bg-red-500 text-white hover:bg-red-700 p-1 m-3 \" hx-delete=\"
 \" hx-target=\"
 \">Delete</button> <button hx-get=\"
 \" hx-target=\"#forms\" hx-swap=\"innerHTML\" class=\"bg-blue-500 text-white hover:bg-blue-700 p-1 m-3\">Edit</button></div>
 <table hx-get=\"/users\" hx-trigger=\"every 5s\" hx-swap=\"outerHTML\" class=\"w-full\"><tr><th>Control</th><th>ID</th><th>Name</th><th>Username</th><th>Email</th></tr><tbody id=\"user-list\">
 </tbody></table>
-<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><link rel=\"stylesheet\" href=\"static/css/style.css\"><script src=\"https://unpkg.com/htmx.org/dist/htmx.js\"></script></head><body class=\"p-16\"><div class=\"\"><h1>FastFit</h1><div id=\"forms\">
+<div class=\"\"><h1>FastFit</h1><div id=\"forms\">
 </div><div class=\"m-10\"></div><h2>Users</h2>
-</div></body></html>
+</div>

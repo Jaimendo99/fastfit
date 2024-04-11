@@ -36,7 +36,7 @@ templ UpdateForm(User models.User) {
 
 templ UserForm(){
 
-    <h2>Add User</h2>
+    <h2 class="font-bold">Add User</h2>
     <form id="addUserForm" hx-post="/users" hx-target="#user-list" hx-swap="afterend">
         <input type="text" name="name" placeholder="Name" required />
         <input type="text" name="username" placeholder="Username" required />
@@ -82,15 +82,6 @@ templ UserList(Users []models.User) {
 
 
 templ Index(Users []models.User) {
-    <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8" />
-            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-             <link rel="stylesheet" href="static/css/style.css"/>
-            <script src="https://unpkg.com/htmx.org/dist/htmx.js"></script>
-        </head>
-        <body class="p-16">
             <div class="">
                 <h1>FastFit</h1>
                 <div id="forms">
@@ -103,7 +94,5 @@ templ Index(Users []models.User) {
                 @UserList(Users)
                 
             </div>
-        </body>
-        </html>
 }
 

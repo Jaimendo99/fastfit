@@ -10,8 +10,10 @@ import (
 
 func GetPage() echo.HandlerFunc {
 	return func(c echo.Context) error {
+
 		var users []models.User
 		store.DB.Find(&users)
-		return views.Index(users).Render(c.Request().Context(), c.Response().Writer)
+		content := views.Index(users)
+		return views.Layout(content, "Home", false).Render(c.Request().Context(), c.Response().Writer)
 	}
 }
