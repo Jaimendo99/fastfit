@@ -10,7 +10,7 @@ import (
 	"time"
 	"unicode"
 
-	"github.com/golang-jwt/jwt/v5"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -19,7 +19,7 @@ type failResponse struct {
 	Message string `json:"message"`
 }
 
-type jwtUserClaims struct {
+type JwtUserClaims struct {
 	Sub uint `json:"sub"`
 	jwt.RegisteredClaims
 }
@@ -101,7 +101,7 @@ func SignIn() echo.HandlerFunc {
 			return c.JSON(http.StatusUnauthorized, failResponse{Message: "Invalid password"})
 		}
 
-		claims := &jwtUserClaims{
+		claims := &JwtUserClaims{
 			user.ID,
 			jwt.RegisteredClaims{
 				ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24 * 7)),
@@ -120,13 +120,11 @@ func SignIn() echo.HandlerFunc {
 			Name:     "Authorization",
 			Value:    tokenString,
 			Expires:  time.Now().Add(time.Hour * 24 * 7),
-			HttpOnly: true,
+			HttpOnly: false,
 			Secure:   false,
 		})
 
-		c.Redirect(http.StatusFound, "/")
-		return c.JSON(http.StatusOK, user)
-
+		return c.Redirect(301, "/")
 	}
 }
 
